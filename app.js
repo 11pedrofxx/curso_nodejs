@@ -8,6 +8,53 @@ servidor.get('/helloworld', (req, resp) => {
 
 })
 
+servidor.get('/mensagem/boasvindas', (req, resp) => {
+
+    resp.send('Olá, sejam bem-vindos');
+
+})
+
+servidor.get('/v2/mensagem/boasvindas', (req, resp) => {
+
+    resp.send('Que bom que vc está aqui, V2');
+
+})
+
+servidor.get('/mensagem/ocupado', (req, resp) => {
+
+    resp.send ('Estou ocupado no momento.')
+
+})
+
+servidor.get('/mensagem/ocupado/recado', (req, resp) => {
+
+    resp.send ('Estou ocupado no momento, deixe uma mensagem no email xxxx.')
+
+})
+
+servidor.get('/calculadora/:n1/:n2', (req, resp) => {
+
+    let n1 = Number (req.params.n1);
+    let n2 = Number(req.params.n2);
+    let soma = n1 + n2;
+
+    resp.send('A soma é ' + soma);
+
+});
+    
+servidor.get('/somar', (req, resp) => {
+
+    let n1 = Number(req.query.n1);
+    let n2 = Number(req.query.n2);
+    let soma = n1 + n2;
+
+    resp.send ({
+
+        message: soma
+
+    })
+
+})
 
 servidor.listen(
     5001,
