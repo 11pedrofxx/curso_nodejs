@@ -3,8 +3,13 @@ const servidor = express(); // variavel criada com const invés de let pq const 
 servidor.use (express.json())/ // faz com que a API consiga usar parametro de corpo
 
 servidor.get('/helloworld', (req, resp) => {
-    // codigo do end point
-    resp.send('Hello world!');
+    
+
+    resp.send({
+
+        message: 'Hello World'
+
+    });
 
 })
 
@@ -12,7 +17,10 @@ servidor.get('/helloworld', (req, resp) => {
 
 servidor.get('/mensagem/boasvindas', (req, resp) => {
 
-    resp.send('Olá, sejam bem-vindos');
+    let obj = {
+        message: 'Olá, sejam bem-vindos'
+    }
+    resp.send(obj);
 
 })
 
@@ -20,7 +28,9 @@ servidor.get('/mensagem/boasvindas', (req, resp) => {
 
 servidor.get('/v2/mensagem/boasvindas', (req, resp) => {
 
-    resp.send('Que bom que vc está aqui, V2');
+    resp.send({
+        message: 'Que bom que vc está aqui, V2'
+    });
 
 })
 
@@ -28,7 +38,9 @@ servidor.get('/v2/mensagem/boasvindas', (req, resp) => {
 
 servidor.get('/mensagem/ocupado', (req, resp) => {
 
-    resp.send('Estou ocupado no momento.')
+    resp.send({
+        message: 'Estou ocupado no momento.'
+    });
 
 })
 
@@ -36,7 +48,9 @@ servidor.get('/mensagem/ocupado', (req, resp) => {
 
 servidor.get('/mensagem/ocupado/recado', (req, resp) => {
 
-    resp.send('Estou ocupado no momento, deixe uma mensagem no email xxxx.')
+    resp.send({
+        message: 'Estou ocupado no momento, deixe uma mensagem no email xxxx.'
+    });
 
 })
 
@@ -48,7 +62,11 @@ servidor.get('/calculadora/somar/:n1/:n2', (req, resp) => {
     let n2 = Number(req.params.n2); // parametro de rota
     let soma = n1 + n2;
 
-    resp.send('A soma é ' + soma);
+    resp.send({
+
+        soma: soma
+
+    });
 
 });
 
@@ -103,7 +121,12 @@ servidor.post('/dobros', (req, resp) => {
         numsarray[i] = nums[i] * 2;
     }
 
-    resp.send(`O dobro dos números ${nums} é: ${numsarray}`);
+    resp.send({
+
+        numeros: nums,
+        dobros: numsarray
+
+    });
 
 });
 
@@ -112,23 +135,32 @@ servidor.post ('/pedido', (req, resp) => {
 
     let cupom = req.query.cupom;
     let valor = req.body.valor;
-    let parcelas = req.body.valor;
+    let parcelas = req.body.parcelas;
 
-     if (cupom = 'COMPRA100') {
+
+     if (parcelas > 1) {
+
+       valor = valor * 1.05
+
+    }
+
+     if (cupom == 'COMPRA100') {
 
         valor -= 100;
 
     }   
 
-    if (parcelas > 1) {
-
-       let juros = valor * 0.05
-
-    }
-
    
 
-    resp.send ('O total do pedido ficou em R$' + valor);
+    let valorParcelas = valor / parcelas;
+   
+
+    resp.send ({
+
+        total: valor,
+        parcelas:valorParcelas
+
+    });
 })
 
 
