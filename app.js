@@ -1,6 +1,8 @@
 import express from 'express'; // express é a base da construção da API
 const servidor = express(); // variavel criada com const invés de let pq const nn pode ser alterado pois o servidor não pra que ficar mudando.
-servidor.use (express.json())/ // faz com que a API consiga usar parametro de corpo
+servidor.use (express.json()); // faz com que a API consiga usar parametro de corpo
+import cors from 'cors'; // cors é um pacote que permite que a API seja acessada de outros dominios
+servidor.use(cors()); // faz com que a API consiga ser acessada de outros dominios
 
 servidor.get('/helloworld', (req, resp) => {
     
@@ -58,6 +60,15 @@ servidor.get('/mensagem/ocupado/recado', (req, resp) => {
 
 servidor.get('/calculadora/somar/:n1/:n2', (req, resp) => {
 
+    if(isNaN(req.params.n1) || isNaN(req.params.n2)) {
+
+        resp.status(400).send({
+            error: 'Os parâmetros devem ser números'
+        });
+        return;
+
+    }
+
     let n1 = Number(req.params.n1);
     let n2 = Number(req.params.n2); // parametro de rota
     let soma = n1 + n2;
@@ -86,8 +97,22 @@ servidor.get('/somar', (req, resp) => {
 
 servidor.get ('/ola', (req, resp) => {
 
+    if (!req.query.nome) {
+
+        resp.status(400).send({
+
+            error: 'Nome não foi expecificado'
+
+        })
+
+    }
+
     let nome = req.query.nome ?? 'você';
-    resp.send (`Olá ${nome}`);
+    resp.send ({
+
+        message: `Olá ${nome}! Seja bem vindo(a)`
+
+    });
 
 })
 
@@ -97,7 +122,7 @@ servidor.get ('/multiplicar', (req, resp) => {
     let n1 = Number(req.query.n1);
     let n2 = Number(req.query.n2);
     let multi = n1 * n2;
-    resp.send (multi);
+    resp.status(300).send (multi);
 
 })
 
@@ -148,7 +173,7 @@ servidor.post ('/pedido', (req, resp) => {
 
         valor -= 100;
 
-    }   
+    }      
 
    
 
