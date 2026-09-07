@@ -119,10 +119,32 @@ servidor.get ('/ola', (req, resp) => {
 servidor.get ('/multiplicar', (req, resp) => {
 
 
-    let n1 = Number(req.query.n1);
-    let n2 = Number(req.query.n2);
-    let multi = n1 * n2;
-    resp.status(300).send (multi);
+    try{
+        if (isNaN(req.query.n1) || !req.query.n1) {
+
+            throw new Error ('O parametro N1 está errado')
+
+        }
+
+        if (isNaN(req.query.n2) || !req.query.n2) {
+
+            throw new Error ('O parametro N2 está errado')
+
+        }
+        let n1 = Number(req.query.n1);
+        let n2 = Number(req.query.n2);
+        let multi = n1 * n2;
+        resp.status(200).send (multi);
+
+}
+
+    catch (error) {
+        resp.status(400).send({
+
+            erro: error.message
+
+        })
+    }
 
 })
 
@@ -191,6 +213,20 @@ servidor.post ('/pedido', (req, resp) => {
 
 servidor.post ('/pedido/completo', (req, resp) => {
 
+    try {
+
+        if (!req.body.parcelas || isNaN(req.body.parcelas)) {
+
+            throw new Error('O parametro parcelas está errado')
+
+        }
+
+        if (!req.body.itens) {
+
+            throw new Error('O parametro itens está errado')
+
+        }
+
     let cupom = req.query.cupom; 
     let parcelas = req.body.parcelas;
     let itens = req.body.itens;
@@ -215,7 +251,24 @@ servidor.post ('/pedido/completo', (req, resp) => {
 
    }
 
-    resp.send (`O total a pagar é ${total}`)
+   resp.send({
+
+    Total: `O total a ser pago é ${total}`
+
+
+   })
+    
+    }
+    
+    catch (error) {
+        resp.status(400).send({
+
+            erro: error.message
+
+        })
+    }
+
+    
 
 })
 
