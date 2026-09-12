@@ -3,6 +3,12 @@ const servidor = express(); // variavel criada com const invés de let pq const 
 servidor.use (express.json()); // faz com que a API consiga usar parametro de corpo
 import cors from 'cors'; // cors é um pacote que permite que a API seja acessada de outros dominios
 servidor.use(cors()); // faz com que a API consiga ser acessada de outros dominios
+import multer from 'multer';
+
+let uploadPerfil = multer({dest: './storage/perfil'}) // Cria a variavel q vai mandar todos os arquivos que a varivel receber para o pasta perfil 
+
+
+servidor.use ('/storage/perfil', express.static ('./storage/perfil'))
 
 servidor.get('/helloworld', (req, resp) => {
     
@@ -60,17 +66,25 @@ servidor.get('/mensagem/ocupado/recado', (req, resp) => {
 
 servidor.get('/calculadora/somar/:n1/:n2', (req, resp) => {
 
-    if(isNaN(req.params.n1) || isNaN(req.params.n2)) {
 
-        resp.status(400).send({
-            error: 'Os parâmetros devem ser números'
-        });
-        return;
+    try {
+
+        let n1 = Number(req.params.n1);
+        let n2 = Number(req.params.n2);
+        
+        if(isNaN(req.params.n1) || !n1 ) {
+
+            throw new Error('O parametro N1 está invalido. Digite um número')
 
     }
 
-    let n1 = Number(req.params.n1);
-    let n2 = Number(req.params.n2); // parametro de rota
+     if(isNaN(req.params.n2) || !n2 ) {
+
+            throw new Error('O parametro N2 está invalido. Digite um número')
+
+    }
+
+     // parametro de rota
     let soma = n1 + n2;
 
     resp.send({
@@ -78,6 +92,18 @@ servidor.get('/calculadora/somar/:n1/:n2', (req, resp) => {
         soma: soma
 
     });
+        
+    } catch (error) {
+        
+        resp.send({
+
+            erro: error.message
+
+        })
+
+    }
+
+    
 
 });
 
@@ -294,6 +320,25 @@ servidor.post ('/compra', (req, resp) => {
     resp.send(`O valor final é ${valor}`)
 
 })
+// cria o endpoint que irá receber a imagem. Pega a variavel 'uploadPerfil' define como single, pois só irá receber uma imagem e dá o nome imagem a ela.
+
+servidor.post ('/perfil/capa', uploadPerfil.single('imagem'), (req, resp) => {
+
+    let caminho = req.file.path;
+    let extensao = req.file.mimetype;
+    let nome = req.file.originalname;
+
+    resp.send({
+
+        caminho: caminho,
+        extensao: extensao,
+        nome: nome
+
+    })
+
+})
+
+
 
 servidor.listen(
     5001,
