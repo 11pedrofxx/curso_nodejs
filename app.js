@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express'; // express é a base da construção da API
 const servidor = express(); // variavel criada com const invés de let pq const nn pode ser alterado pois o servidor não pra que ficar mudando.
 servidor.use (express.json()); // faz com que a API consiga usar parametro de corpo
@@ -109,9 +110,44 @@ servidor.get('/calculadora/somar/:n1/:n2', (req, resp) => {
 
 servidor.get('/somar', (req, resp) => {
 
+
+    try {
+        
     let n1 = Number(req.query.n1);
-    let n2 = Number(req.query.n2); // parametro de query
-    let soma = n1 + n2;
+    let n2 = Number(req.query.n2);
+
+        if (isNaN(n1) || !n1) {
+
+            throw new Error('O Parametro N1 está inválido. N1 deve ser um número.')
+
+        }
+
+        if (isNaN(n2) || !n2) {
+
+            throw new Error('O Parametro N2 está inválido. N2 deve ser um número.')
+
+        }
+
+        let soma = n1 + n2;
+
+        resp.send({
+
+            Resultado: soma
+
+        })
+
+    } catch (error) {
+        
+       resp.send({
+
+            erro: error.message
+
+        })
+
+    }
+
+     // parametro de query
+    
 
     resp.send({
 
@@ -339,7 +375,7 @@ servidor.post ('/perfil/capa', uploadPerfil.single('imagem'), (req, resp) => {
 })
 
 
-
+const port = process.env.port
 servidor.listen(
-    5001,
-    () => console.log('API subiu com sucesso na porta 5001!'))
+    port,
+    () => console.log('API subiu com sucesso na porta ' + port))
