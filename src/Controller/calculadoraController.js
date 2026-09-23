@@ -73,24 +73,17 @@ endpoints.get('/somar', (req, resp) => {
 
         })
 
-    } catch (error) {
+    }
+    
+    catch (error) {
         
-       resp.send({
-
+            logError(error) 
+            resp.send({
             erro: error.message
 
-        })
+            })
 
     }
-
-     // parametro de query
-    
-
-    resp.send({
-
-        message: soma
-
-    })
 
 })
 

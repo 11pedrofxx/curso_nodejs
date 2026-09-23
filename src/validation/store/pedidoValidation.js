@@ -14,7 +14,7 @@ export function validarPedido (req) {
 
     if (!req.body.parcelas || isNaN(req.body.parcelas)) {
 
-        throw new Error ('O parametro parcelas está errado. Informe um número')
+        throw new Error (' O parametro parcelas está errado. Informe um número')
 
     }
 

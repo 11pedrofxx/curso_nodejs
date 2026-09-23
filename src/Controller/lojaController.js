@@ -5,12 +5,16 @@ import { validarPedidoCompleto } from "../validation/store/pedidocompletoValidat
 import { valordopedido, valordasParcelas } from "../service/loja/pedidoService.js";
 import { validarPedido } from "../validation/store/pedidoValidation.js";
 
+
+
+
 endpoints.post ('/pedido', (req, resp) => {
 
 
     try {
         
-        validarPedido(req)
+    validarPedido(req)
+
     let cupom = req.query.cupom;
     let valor = req.body.valor;
     let parcelas = req.body.parcelas;
@@ -28,12 +32,8 @@ endpoints.post ('/pedido', (req, resp) => {
     });
 
     } catch (error) {
-        
-        resp.send({
-
-            erro: error.message
-
-        })
+        logError(error)
+        resp.send(padraoErro(error))
 
     }
 
@@ -61,7 +61,7 @@ endpoints.post('/pedido/completo', (req, resp) => {
         })
 
     } catch (error) {
-
+        logError(error)
         resp.status(400).send({
             erro: error.message
         })
