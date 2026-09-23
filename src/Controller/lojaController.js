@@ -1,37 +1,43 @@
 import { Router } from "express";
 const endpoints = Router();
 import { total, valueparcelas } from "../service/loja/calcPedidoCompletoService.js";
+import { validarPedidoCompleto } from "../validation/store/pedidocompletoValidation.js";
+import { valordopedido, valordasParcelas } from "../service/loja/pedidoService.js";
+import { validarPedido } from "../validation/store/pedidoValidation.js";
 
 endpoints.post ('/pedido', (req, resp) => {
 
+
+    try {
+        
+        validarPedido(req)
     let cupom = req.query.cupom;
     let valor = req.body.valor;
     let parcelas = req.body.parcelas;
+    
 
-
-     if (parcelas > 1) {
-
-       valor = valor * 1.05
-
-    }
-
-     if (cupom == 'COMPRA100') {
-
-        valor -= 100;
-
-    }      
-
-   
-
-    let valorParcelas = valor / parcelas;
+    let valorcompra = valordopedido(valor, parcelas, cupom);
+    let valorParcelas = valordasParcelas(valorcompra, parcelas);
    
 
     resp.send ({
 
-        total: valor,
+        total: valorcompra,
         parcelas:valorParcelas
 
     });
+
+    } catch (error) {
+        
+        resp.send({
+
+            erro: error.message
+
+        })
+
+    }
+
+    
 })
 
 
@@ -39,13 +45,7 @@ endpoints.post('/pedido/completo', (req, resp) => {
 
     try {
 
-        if (!req.body.parcelas || isNaN(req.body.parcelas)) {
-            throw new Error('O parametro parcelas está errado')
-        }
-
-        if (!req.body.itens) {
-            throw new Error('O parametro itens está errado')
-        }
+        validarPedidoCompleto(req)
 
         let cupom = req.query.cupom
         let parcelas = req.body.parcelas

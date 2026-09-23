@@ -1,6 +1,6 @@
 import { Router } from "express";
 const endpoints = Router();
-import { CalcMedia } from "../service/mediaService.js";
+import { CalcMedia } from "../service/calc/mediaService.js";
 
 endpoints.get('/calculadora/somar/:n1/:n2', (req, resp) => {
 
